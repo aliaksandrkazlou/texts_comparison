@@ -47,4 +47,4 @@ def get_stats(text):
 
 def get_table(stats1, stats2):
     markdown = Tomark.table([stats1, stats2])
-    print(markdown)
+    return markdown

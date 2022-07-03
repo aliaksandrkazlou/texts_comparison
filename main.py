@@ -10,4 +10,4 @@ if __name__ == "__main__":
     stats1 = functions.get_stats(text1)
     stats2 = functions.get_stats(text2)
 
-    functions.get_table(stats1, stats2)
+    print(functions.get_table(stats1, stats2))
