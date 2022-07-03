@@ -32,7 +32,7 @@ def get_stats(text):
     # Colons per sentence
     avg_colons = tokens.count(":") / float(len(sentences))
     # Dashes per sentence
-    avg_dash = tokens.count(":") / float(len(sentences))
+    avg_dash = tokens.count("-") / float(len(sentences))
 
     return {
         "Mean words per sentence": awps,
