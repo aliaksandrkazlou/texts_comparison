@@ -14,7 +14,6 @@ def load_text(file_path):
 
 
 def get_stats(text):
-
     tokens = nltk.word_tokenize(text.lower())
     words = word_tokenizer.tokenize(text.lower())
     sentences = nltk.sent_tokenize(text, language="russian")
@@ -35,7 +34,8 @@ def get_stats(text):
     # Colons per sentence
     avg_colons = tokens.count(":") / float(len(sentences))
     # Dashes per sentence
-    avg_dash = (tokens.count("-") + tokens.count("—")) / float(len(sentences))
+    dash_count = tokens.count("-") + tokens.count("–") + tokens.count("—")
+    avg_dash = dash_count / float(len(sentences))
     # Dots per sentence
     avg_dots = tokens.count(".") / float(len(sentences))
     # QM per sentence
@@ -44,16 +44,16 @@ def get_stats(text):
     avg_exc = tokens.count("!") / float(len(sentences))
 
     return {
-        "Mean words per sentence": awps,
-        "Sentence length SD": wpssd,
+        "Words p/s mean": awps,
+        "Words p/s SD": wpssd,
         "Lexical diversity": lex_diversity,
-        "Commas per sentence": avg_commas,
-        "Semicolons per sentence": avg_semi,
-        "Colons per sentence": avg_colons,
-        "Dashes per sentence": avg_dash,
-        "Dots per sentence": avg_dots,
-        "Question marks per sentence": avg_qm,
-        "Exclams per sentence": avg_exc,
+        "Commas p/s": avg_commas,
+        "Semicolons p/s": avg_semi,
+        "Colons p/s": avg_colons,
+        "Dashes p/s": avg_dash,
+        "Dots p/s": avg_dots,
+        "Question marks p/s": avg_qm,
+        "Exclamation marks p/s": avg_exc,
     }
 
 
