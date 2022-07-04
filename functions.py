@@ -82,4 +82,4 @@ def bootstrapped_ci(stats, lower=True, n=1000):
 
 def get_table(stats1, stats2):
     markdown = Tomark.table([stats1, stats2])
-    print(markdown)
+    return markdown
