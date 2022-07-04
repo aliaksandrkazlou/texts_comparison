@@ -1,6 +1,7 @@
 import numpy as np
 import nltk
 from tomark import Tomark
+import random
 
 word_tokenizer = nltk.tokenize.RegexpTokenizer(r"\w+")
 
@@ -32,7 +33,13 @@ def get_stats(text):
     # Colons per sentence
     avg_colons = tokens.count(":") / float(len(sentences))
     # Dashes per sentence
-    avg_dash = tokens.count("-") / float(len(sentences))
+    avg_dash = (tokens.count("-") + tokens.count("—")) / float(len(sentences))
+    # Dots per sentence
+    avg_dots = tokens.count(".") / float(len(sentences))
+    # QM per sentence
+    avg_qm = tokens.count("?") / float(len(sentences))
+    # Exc per sentence
+    avg_exc = tokens.count("!") / float(len(sentences))
 
     return {
         "Mean words per sentence": awps,
@@ -42,6 +49,34 @@ def get_stats(text):
         "Semicolons per sentence": avg_semi,
         "Colons per sentence": avg_colons,
         "Dashes per sentence": avg_dash,
+        "Dots per sentence": avg_dots,
+        "Question marks per sentence": avg_qm,
+        "Exclams per sentence": avg_exc,
+    }
+
+
+# TODO: that's def not the correct abstraction, just a placeholder to rewrite later
+def bootstrapped_ci(stats, lower=True, n=1000):
+    bts = []
+    for _ in range(n):
+        bts.append([random.choice(stats) for _ in stats])
+    if lower:
+        pcntl = 0.025
+    else:
+        pcntl = 0.975
+    return {
+        "Mean words per sentence": np.percentile(bts["Mean words per sentence"], pcntl),
+        "Sentence length SD": np.percentile(bts["Sentence length SD"], pcntl),
+        "Lexical diversity": np.percentile(bts["Lexical diversity":], pcntl),
+        "Commas per sentence": np.percentile(bts["Commas per sentence"], pcntl),
+        "Semicolons per sentence": np.percentile(bts["Semicolons per sentence"], pcntl),
+        "Colons per sentence": np.percentile(bts["Colons per sentence"], pcntl),
+        "Dashes per sentence": np.percentile(bts["Dashes per sentence"], pcntl),
+        "Dots per sentence": np.percentile(bts["Dots per sentence"], pcntl),
+        "Question marks per sentence": np.percentile(
+            bts["Question marks per sentence"], pcntl
+        ),
+        "Exclams per sentence": np.percentile(bts["Exclams per sentence"], pcntl),
     }
 
 
