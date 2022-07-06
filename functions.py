@@ -15,17 +15,13 @@ def load_text(file_path):
 
 def get_stats(text):
     tokens = nltk.word_tokenize(text.lower())
-    words = word_tokenizer.tokenize(text.lower())
     sentences = nltk.sent_tokenize(text, language="russian")
-    vocab = set(words)
     words_per_sentence = np.array([len(word_tokenizer.tokenize(s)) for s in sentences])
 
     # average number of words per sentence
     awps = words_per_sentence.mean()
     # sentence length variation
     wpssd = words_per_sentence.std()
-    # Lexical diversity
-    lex_diversity = len(vocab) / float(len(words))
 
     # Commas per sentence
     avg_commas = tokens.count(",") / float(len(sentences))
@@ -46,7 +42,6 @@ def get_stats(text):
     return {
         "Words p/s mean": awps,
         "Words p/s SD": wpssd,
-        "Lexical diversity": lex_diversity,
         "Commas p/s": avg_commas,
         "Semicolons p/s": avg_semi,
         "Colons p/s": avg_colons,
