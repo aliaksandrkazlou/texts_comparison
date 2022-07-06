@@ -1,7 +1,9 @@
+from collections import defaultdict
+import random
+
 import numpy as np
 import nltk
 from tomark import Tomark
-import random
 
 word_tokenizer = nltk.tokenize.RegexpTokenizer(r"\w+")
 
@@ -12,19 +14,14 @@ def load_text(file_path):
 
 
 def get_stats(text):
-
     tokens = nltk.word_tokenize(text.lower())
-    words = word_tokenizer.tokenize(text.lower())
     sentences = nltk.sent_tokenize(text, language="russian")
-    vocab = set(words)
     words_per_sentence = np.array([len(word_tokenizer.tokenize(s)) for s in sentences])
 
     # average number of words per sentence
     awps = words_per_sentence.mean()
     # sentence length variation
     wpssd = words_per_sentence.std()
-    # Lexical diversity
-    lex_diversity = len(vocab) / float(len(words))
 
     # Commas per sentence
     avg_commas = tokens.count(",") / float(len(sentences))
@@ -33,7 +30,8 @@ def get_stats(text):
     # Colons per sentence
     avg_colons = tokens.count(":") / float(len(sentences))
     # Dashes per sentence
-    avg_dash = (tokens.count("-") + tokens.count("—")) / float(len(sentences))
+    dash_count = tokens.count("-") + tokens.count("–") + tokens.count("—")
+    avg_dash = dash_count / float(len(sentences))
     # Dots per sentence
     avg_dots = tokens.count(".") / float(len(sentences))
     # QM per sentence
@@ -42,42 +40,30 @@ def get_stats(text):
     avg_exc = tokens.count("!") / float(len(sentences))
 
     return {
-        "Mean words per sentence": awps,
-        "Sentence length SD": wpssd,
-        "Lexical diversity": lex_diversity,
-        "Commas per sentence": avg_commas,
-        "Semicolons per sentence": avg_semi,
-        "Colons per sentence": avg_colons,
-        "Dashes per sentence": avg_dash,
-        "Dots per sentence": avg_dots,
-        "Question marks per sentence": avg_qm,
-        "Exclams per sentence": avg_exc,
+        "Words p/s mean": awps,
+        "Words p/s SD": wpssd,
+        "Commas p/s": avg_commas,
+        "Semicolons p/s": avg_semi,
+        "Colons p/s": avg_colons,
+        "Dashes p/s": avg_dash,
+        "Dots p/s": avg_dots,
+        "Question marks p/s": avg_qm,
+        "Exclamation marks p/s": avg_exc,
     }
 
 
-# TODO: that's def not the correct abstraction, just a placeholder to rewrite later
-def bootstrapped_ci(stats, lower=True, n=1000):
-    bts = []
+def bootstrapped_ci(text, q=0.5, n=1000, k=None):
+    random.seed(0)
+    sentences = nltk.sent_tokenize(text, language="russian")
+
+    stats = defaultdict(list)
+    if k is None:
+        k = len(sentences)
     for _ in range(n):
-        bts.append([random.choice(stats) for _ in stats])
-    if lower:
-        pcntl = 0.025
-    else:
-        pcntl = 0.975
-    return {
-        "Mean words per sentence": np.percentile(bts["Mean words per sentence"], pcntl),
-        "Sentence length SD": np.percentile(bts["Sentence length SD"], pcntl),
-        "Lexical diversity": np.percentile(bts["Lexical diversity":], pcntl),
-        "Commas per sentence": np.percentile(bts["Commas per sentence"], pcntl),
-        "Semicolons per sentence": np.percentile(bts["Semicolons per sentence"], pcntl),
-        "Colons per sentence": np.percentile(bts["Colons per sentence"], pcntl),
-        "Dashes per sentence": np.percentile(bts["Dashes per sentence"], pcntl),
-        "Dots per sentence": np.percentile(bts["Dots per sentence"], pcntl),
-        "Question marks per sentence": np.percentile(
-            bts["Question marks per sentence"], pcntl
-        ),
-        "Exclams per sentence": np.percentile(bts["Exclams per sentence"], pcntl),
-    }
+        bootstrapped_text = " ".join(random.choices(sentences, k=k))
+        for key, value in get_stats(bootstrapped_text).items():
+            stats[key].append(value)
+    return {key: np.percentile(stats_list, q) for key, stats_list in stats.items()}
 
 
 def get_table(stats1, stats2):
