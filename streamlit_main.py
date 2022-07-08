@@ -25,10 +25,10 @@ if submitted:
     with st.spinner("Calculating the metrics"):
         stats1 = functions.get_stats(text1)
         stats2 = functions.get_stats(text2)
-        text1_ci_left = functions.bootstrapped_ci(text1, q=0.025, n=1000)
-        text1_ci_right = functions.bootstrapped_ci(text1, q=0.975, n=1000)
-        text2_ci_left = functions.bootstrapped_ci(text2, q=0.025, n=1000)
-        text2_ci_right = functions.bootstrapped_ci(text2, q=0.975, n=1000)
+        text1_ci_left = functions.bootstrapped_ci(text1, q=2.5, n=1000)
+        text1_ci_right = functions.bootstrapped_ci(text1, q=97.5, n=1000)
+        text2_ci_left = functions.bootstrapped_ci(text2, q=2.5, n=1000)
+        text2_ci_right = functions.bootstrapped_ci(text2, q=97.5, n=1000)
 
     st.write(functions.get_table(stats1, stats2))
     st.write(functions.get_table(text1_ci_left, text1_ci_right))
