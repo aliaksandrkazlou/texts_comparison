@@ -75,9 +75,10 @@ def get_table(stats1, stats2, round_decimals=3):
     markdown = Tomark.table(
         [
             {
-                key: np.round(stat, round_decimals)
+                key: (
+                    np.round(stat, round_decimals) if isinstance(stat, Number) else stat
+                )
                 for key, stat in stats_list.items()
-                if isinstance(stat, Number)
             }
             for stats_list in [stats1, stats2]
         ]
