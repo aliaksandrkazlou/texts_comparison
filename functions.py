@@ -6,7 +6,7 @@ import numpy as np
 import nltk
 from tomark import Tomark
 
-word_tokenizer = nltk.tokenize.RegexpTokenizer(r"\w+")
+word_tokenizer = nltk.tokenize.RegexpTokenizer(r"\w+[-\w*]*")
 
 
 def load_text(file_path):
@@ -30,6 +30,9 @@ def get_stats(text):
     avg_semi = tokens.count(";") / float(len(sentences))
     # Colons per sentence
     avg_colons = tokens.count(":") / float(len(sentences))
+    # Hyphens per sentence
+    hyphen_count = sum([token.count("-") for token in word_tokenizer.tokenize(text)])
+    avg_hyphens = hyphen_count / float(len(sentences))
     # Dashes per sentence
     dash_count = tokens.count("-") + tokens.count("–") + tokens.count("—")
     avg_dash = dash_count / float(len(sentences))
@@ -46,6 +49,7 @@ def get_stats(text):
         "Commas p/s": avg_commas,
         "Semicolons p/s": avg_semi,
         "Colons p/s": avg_colons,
+        "Hyphens p/s": avg_hyphens,
         "Dashes p/s": avg_dash,
         "Dots p/s": avg_dots,
         "Question marks p/s": avg_qm,
