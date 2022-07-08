@@ -28,15 +28,23 @@ if submitted:
         stats1 = functions.get_stats(text1)
         stats2 = functions.get_stats(text2)
     st.write("##### Metrics for text 1 and text 2:")
-    st.write(functions.get_table(stats1, stats2))
+    st.write(functions.get_table({"": "Text 1", **stats1}, {"": "Text 2", **stats2}))
     with st.spinner("Calculating the bootstrapped confidence interval for text 1"):
         text1_ci_left = functions.bootstrapped_ci(text1, q=0.025, n=1000)
         text1_ci_right = functions.bootstrapped_ci(text1, q=0.975, n=1000)
     st.write("##### Bootstrapped 95% confidence interval for text 1:")
-    st.write(functions.get_table(text1_ci_left, text1_ci_right))
+    st.write(
+        functions.get_table(
+            {"": "Lower", **text1_ci_left}, {"": "Upper", **text1_ci_right}
+        )
+    )
     with st.spinner("Calculating the bootstrapped confidence interval for text 2"):
         text2_ci_left = functions.bootstrapped_ci(text2, q=0.025, n=1000)
         text2_ci_right = functions.bootstrapped_ci(text2, q=0.975, n=1000)
     st.write("##### Bootstrapped 95% confidence interval for text 2:")
-    st.write(functions.get_table(text2_ci_left, text2_ci_right))
+    st.write(
+        functions.get_table(
+            {"": "Lower", **text2_ci_left}, {"": "Upper", **text2_ci_right}
+        )
+    )
     st.caption("p/s — per sentence")
