@@ -1,4 +1,5 @@
 from collections import defaultdict
+from numbers import Number
 import random
 
 import numpy as np
@@ -66,6 +67,15 @@ def bootstrapped_ci(text, q=0.5, n=1000, k=None):
     return {key: np.percentile(stats_list, q) for key, stats_list in stats.items()}
 
 
-def get_table(stats1, stats2):
-    markdown = Tomark.table([stats1, stats2])
+def get_table(stats1, stats2, round_decimals=3):
+    markdown = Tomark.table(
+        [
+            {
+                key: np.round(stat, round_decimals)
+                for key, stat in stats_list.items()
+                if isinstance(stat, Number)
+            }
+            for stats_list in [stats1, stats2]
+        ]
+    )
     return markdown
