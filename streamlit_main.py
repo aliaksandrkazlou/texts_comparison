@@ -8,7 +8,10 @@ st.set_page_config(page_title="Text comparison", page_icon="🧐", layout="wide"
 st.title("Text comparison")
 
 with st.spinner("Loading"):
-    nltk.download("popular")
+    try:
+        nltk.data.find("tokenizers/punkt")
+    except LookupError:
+        nltk.download("punkt", quiet=True)
 
 with st.form("text_form"):
     left_column, right_column = st.columns(2)
